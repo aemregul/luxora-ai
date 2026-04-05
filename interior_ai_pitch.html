@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interior AI — Pitch Deck</title>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Mono:wght@300;400&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #C9A84C;
+    --gold-dim: #8B6020;
+    --bg: #0A0908;
+    --bg2: #100F0D;
+    --bg3: #161410;
+    --border: #1E1C18;
+    --text: #E8E3D8;
+    --muted: #6B6458;
+    --muted2: #3A3530;
+  }
+
+  html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: 'Cormorant Garamond', Georgia, serif; }
+
+  /* SLIDES */
+  #deck { width: 100%; height: 100%; position: relative; }
+  .slide {
+    position: absolute; inset: 0;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.5s ease;
+    display: flex; flex-direction: column;
+    padding: 0;
+  }
+  .slide.active { opacity: 1; pointer-events: all; }
+
+  /* NAV */
+  #nav {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 12px; z-index: 100;
+    background: #0D0C0Acc; padding: 8px 16px; border-radius: 40px;
+    border: 1px solid var(--border); backdrop-filter: blur(8px);
+  }
+  .nav-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--muted2); cursor: pointer; transition: all 0.2s;
+  }
+  .nav-dot.on { background: var(--gold); transform: scale(1.3); }
+  #prev, #next {
+    background: none; border: none; color: var(--muted); cursor: pointer;
+    font-size: 16px; padding: 2px 6px; transition: color 0.2s;
+  }
+  #prev:hover, #next:hover { color: var(--gold); }
+  #slide-num { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); min-width: 36px; text-align: center; }
+
+  /* COMMON */
+  .slide-inner { flex: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+  .brand { position: fixed; top: 22px; left: 28px; z-index: 50; display: flex; align-items: center; gap: 10px; }
+  .brand-icon { width: 28px; height: 28px; border-radius: 6px; background: linear-gradient(135deg, var(--gold), var(--gold-dim)); display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--bg); font-weight: bold; }
+  .brand-name { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.15em; }
+  .slide-tag { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--gold); letter-spacing: 0.2em; text-transform: uppercase; }
+  .big-title { font-size: clamp(42px, 7vw, 80px); font-weight: 300; line-height: 1.05; letter-spacing: -0.01em; }
+  .big-title em { font-style: italic; color: var(--gold); }
+  .sub { font-size: clamp(16px, 2vw, 22px); color: var(--muted); font-weight: 300; line-height: 1.6; }
+  .rule { width: 60px; height: 1px; background: var(--gold); margin: 24px 0; }
+  .card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 14px; padding: 24px 28px;
+  }
+  .card-title { font-size: 18px; font-weight: 600; color: var(--gold); margin-bottom: 8px; letter-spacing: 0.02em; }
+  .card-body { font-size: 15px; color: var(--muted); line-height: 1.7; font-weight: 300; }
+  .number { font-family: 'DM Mono', monospace; font-size: 40px; color: var(--gold); font-weight: 300; line-height: 1; }
+  .number-label { font-size: 13px; color: var(--muted); font-family: 'DM Mono', monospace; letter-spacing: 0.1em; margin-top: 4px; }
+  .pill { display: inline-block; padding: 4px 12px; border-radius: 20px; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; border: 1px solid var(--border); color: var(--muted); }
+  .pill.gold { border-color: var(--gold-dim); color: var(--gold); }
+  .step-num { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--gold); margin-bottom: 8px; }
+  .flow-arrow { color: var(--muted2); font-size: 20px; align-self: center; flex-shrink: 0; }
+
+  /* SLIDE 1: HERO */
+  #s1 { background: var(--bg); }
+  #s1 .slide-inner { justify-content: center; padding: 0 8% }
+  #s1 .eyebrow { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.3em; color: var(--gold); margin-bottom: 28px; }
+  #s1 .hero-title { font-size: clamp(56px, 9vw, 112px); font-weight: 300; line-height: 0.95; letter-spacing: -0.02em; }
+  #s1 .hero-title em { font-style: italic; color: var(--gold); }
+  #s1 .hero-sub { max-width: 520px; font-size: 18px; color: var(--muted); font-weight: 300; line-height: 1.7; margin-top: 28px; }
+  #s1 .corner { position: absolute; bottom: 60px; right: 8%; text-align: right; }
+  #s1 .corner-text { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted2); line-height: 2; }
+  #s1 .bg-num { position: absolute; right: 5%; top: 50%; transform: translateY(-50%); font-size: 30vw; font-weight: 300; color: #ffffff04; line-height: 1; font-family: 'Cormorant Garamond', serif; pointer-events: none; }
+  #s1 .tag-row { display: flex; gap: 8px; margin-top: 32px; flex-wrap: wrap; }
+
+  /* SLIDE 2: PROBLEM */
+  #s2 .slide-inner { padding: 80px 8%; justify-content: center; gap: 40px; }
+  #s2 .problems { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-top: 16px; }
+  #s2 .prob-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 28px 24px; }
+  #s2 .prob-icon { font-size: 28px; margin-bottom: 14px; }
+  #s2 .prob-title { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+  #s2 .prob-body { font-size: 14px; color: var(--muted); line-height: 1.7; font-weight: 300; }
+
+  /* SLIDE 3: SOLUTION */
+  #s3 .slide-inner { padding: 70px 8%; justify-content: center; gap: 32px; }
+  #s3 .sol-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  #s3 .sol-big { grid-column: 1 / -1; background: linear-gradient(135deg, #1A1610, #111009); border: 1px solid var(--gold-dim); border-radius: 16px; padding: 32px 36px; display: flex; align-items: center; gap: 36px; }
+  #s3 .sol-icon-big { font-size: 52px; flex-shrink: 0; }
+  #s3 .sol-title-big { font-size: 28px; font-weight: 300; color: var(--text); line-height: 1.3; }
+  #s3 .sol-title-big em { color: var(--gold); font-style: italic; }
+
+  /* SLIDE 4: HOW IT WORKS - PIPELINE */
+  #s4 .slide-inner { padding: 70px 6%; justify-content: center; gap: 28px; }
+  #s4 .pipeline { display: flex; align-items: stretch; gap: 0; }
+  #s4 .pipe-step { flex: 1; background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 24px 20px; position: relative; }
+  #s4 .pipe-step + .pipe-step { border-left: none; border-radius: 0; }
+  #s4 .pipe-step:first-child { border-radius: 14px 0 0 14px; }
+  #s4 .pipe-step:last-child { border-radius: 0 14px 14px 0; }
+  #s4 .pipe-arrow { position: absolute; right: -14px; top: 50%; transform: translateY(-50%); z-index: 2; width: 28px; height: 28px; background: var(--bg); border: 1px solid var(--gold-dim); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--gold); font-size: 12px; }
+  #s4 .pipe-num { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--gold-dim); letter-spacing: 0.15em; margin-bottom: 10px; }
+  #s4 .pipe-title { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+  #s4 .pipe-body { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  #s4 .pipe-tag { display: inline-block; margin-top: 10px; padding: 2px 8px; border-radius: 4px; font-family: 'DM Mono', monospace; font-size: 9px; color: var(--gold-dim); border: 1px solid var(--gold-dim); letter-spacing: 0.08em; }
+  #s4 .detail-row { display: flex; gap: 16px; }
+  #s4 .detail-box { flex: 1; background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+  #s4 .detail-box-title { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--gold); letter-spacing: 0.12em; margin-bottom: 8px; }
+  #s4 .detail-box-body { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* SLIDE 5: PHOTO ROOM DEMO */
+  #s5 .slide-inner { padding: 0; flex-direction: row; }
+  #s5 .s5-panel { flex: 1; position: relative; overflow: hidden; }
+  #s5 .s5-divider {
+    width: 3px; flex-shrink: 0; z-index: 20;
+    background: linear-gradient(to bottom, transparent 2%, var(--gold) 20%, var(--gold) 80%, transparent 98%);
+    box-shadow: 0 0 12px rgba(201,168,76,0.3), 0 0 24px rgba(201,168,76,0.15);
+  }
+  #s5 .room-photo {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; display: block;
+  }
+  /* Ken Burns */
+  #s5 .kb-left  { animation: kbL 22s ease-in-out infinite alternate; }
+  #s5 .kb-right { animation: kbR 26s ease-in-out infinite alternate; }
+  @keyframes kbL { from { transform: scale(1.0) } to { transform: scale(1.06) translate(-0.5%, -0.5%) } }
+  @keyframes kbR { from { transform: scale(1.0) translate(0.3%, 0.3%) } to { transform: scale(1.07) translate(-0.4%, -0.6%) } }
+
+  /* Grid overlay on left panel */
+  #s5 .grid-overlay {
+    position: absolute; inset: 0; z-index: 3; pointer-events: none;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(201,168,76,0.06) 59px, rgba(201,168,76,0.06) 60px),
+      repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(201,168,76,0.06) 59px, rgba(201,168,76,0.06) 60px);
+  }
+
+  /* Base room photo (always visible) */
+  #s5 .room-base {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; display: block; z-index: 1;
+  }
+
+  /* Furniture layers — each is the FULL roomdoluoda.jpg, CSS-masked to its furniture region */
+  /* This ensures furniture appears at EXACT original proportions and positions */
+  #s5 .furniture-layer {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; display: block; z-index: 2;
+    opacity: 0; filter: blur(12px);
+    pointer-events: none;
+  }
+
+  /* Sofa group mask — center of room */
+  #fl-sofa {
+    -webkit-mask-image:
+      radial-gradient(ellipse 42% 32% at 50% 52%, black 50%, transparent 100%);
+    mask-image:
+      radial-gradient(ellipse 42% 32% at 50% 52%, black 50%, transparent 100%);
+  }
+  /* Coffee/side tables mask */
+  #fl-tables {
+    -webkit-mask-image:
+      radial-gradient(ellipse 16% 12% at 40% 64%, black 50%, transparent 100%),
+      radial-gradient(ellipse 12% 10% at 62% 62%, black 50%, transparent 100%),
+      radial-gradient(ellipse 10% 8% at 20% 56%, black 50%, transparent 100%);
+    mask-image:
+      radial-gradient(ellipse 16% 12% at 40% 64%, black 50%, transparent 100%),
+      radial-gradient(ellipse 12% 10% at 62% 62%, black 50%, transparent 100%),
+      radial-gradient(ellipse 10% 8% at 20% 56%, black 50%, transparent 100%);
+    -webkit-mask-composite: source-over;
+    mask-composite: add;
+  }
+  /* Wall decor, art, vases mask */
+  #fl-decor {
+    -webkit-mask-image:
+      radial-gradient(ellipse 16% 30% at 12% 36%, black 45%, transparent 100%),
+      radial-gradient(ellipse 12% 18% at 50% 18%, black 45%, transparent 100%),
+      radial-gradient(ellipse 14% 20% at 88% 32%, black 45%, transparent 100%),
+      radial-gradient(ellipse 10% 14% at 78% 58%, black 45%, transparent 100%);
+    mask-image:
+      radial-gradient(ellipse 16% 30% at 12% 36%, black 45%, transparent 100%),
+      radial-gradient(ellipse 12% 18% at 50% 18%, black 45%, transparent 100%),
+      radial-gradient(ellipse 14% 20% at 88% 32%, black 45%, transparent 100%),
+      radial-gradient(ellipse 10% 14% at 78% 58%, black 45%, transparent 100%);
+    -webkit-mask-composite: source-over;
+    mask-composite: add;
+  }
+  /* Lighting + ceiling + rug edges mask */
+  #fl-lights {
+    -webkit-mask-image:
+      radial-gradient(ellipse 28% 14% at 50% 5%, black 45%, transparent 100%),
+      radial-gradient(ellipse 50% 18% at 50% 92%, black 40%, transparent 100%),
+      radial-gradient(ellipse 8% 14% at 94% 42%, black 45%, transparent 100%),
+      radial-gradient(ellipse 8% 14% at 6% 42%, black 45%, transparent 100%);
+    mask-image:
+      radial-gradient(ellipse 28% 14% at 50% 5%, black 45%, transparent 100%),
+      radial-gradient(ellipse 50% 18% at 50% 92%, black 40%, transparent 100%),
+      radial-gradient(ellipse 8% 14% at 94% 42%, black 45%, transparent 100%),
+      radial-gradient(ellipse 8% 14% at 6% 42%, black 45%, transparent 100%);
+    -webkit-mask-composite: source-over;
+    mask-composite: add;
+  }
+
+  /* Placement ring animation */
+  #s5 .placement-ring {
+    position: absolute; z-index: 16; pointer-events: none;
+    width: 80px; height: 80px;
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0; transition: none;
+  }
+  #s5 .placement-ring::before, #s5 .placement-ring::after {
+    content: ''; position: absolute; inset: 0;
+    border: 2px solid var(--gold); border-radius: 50%;
+    opacity: 0;
+  }
+  #s5 .placement-ring.active::before {
+    animation: ringPulse1 2s ease-out forwards;
+  }
+  #s5 .placement-ring.active::after {
+    animation: ringPulse2 2s ease-out 0.3s forwards;
+  }
+  @keyframes ringPulse1 {
+    0% { transform: scale(0); opacity: 0.8; }
+    100% { transform: scale(3); opacity: 0; }
+  }
+  @keyframes ringPulse2 {
+    0% { transform: scale(0); opacity: 0.5; }
+    100% { transform: scale(4.5); opacity: 0; }
+  }
+
+  /* 3D Walkthrough button */
+  #s5 .btn-360 {
+    position: absolute; bottom: 56px; left: 50%; transform: translateX(-50%);
+    z-index: 20; cursor: pointer;
+    background: linear-gradient(135deg, rgba(201,168,76,0.9), rgba(139,96,32,0.9));
+    color: var(--bg); border: none; border-radius: 28px;
+    padding: 10px 24px; font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 0.15em; font-weight: bold;
+    opacity: 0; pointer-events: none; transition: opacity 0.5s ease, transform 0.5s ease;
+    box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+  }
+  #s5 .btn-360.show { opacity: 1; pointer-events: all; }
+  #s5 .btn-360:hover { transform: translateX(-50%) scale(1.05); box-shadow: 0 6px 28px rgba(201,168,76,0.5); }
+
+  /* Gallery overlay */
+  .pano-overlay {
+    position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.96);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+  }
+  .pano-overlay.active { opacity: 1; pointer-events: all; }
+  .pano-container {
+    width: 90vw; height: 80vh; border-radius: 16px; overflow: hidden;
+    position: relative; cursor: grab;
+  }
+  .pano-container:active { cursor: grabbing; }
+  .pano-header {
+    display: flex; align-items: center; justify-content: space-between;
+    width: 90vw; padding: 12px 0; margin-bottom: 8px;
+  }
+  .pano-title { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--gold); letter-spacing: 0.2em; }
+  .pano-hint { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); }
+  .pano-close {
+    background: none; border: 1px solid var(--border); color: var(--muted);
+    border-radius: 50%; width: 36px; height: 36px; cursor: pointer;
+    font-size: 18px; display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .pano-close:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* Gallery slides */
+  .gallery-track { position: absolute; inset: 0; }
+  .gallery-slide {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center;
+    opacity: 0; transition: opacity 1.2s ease, transform 8s ease;
+    transform: scale(1);
+  }
+  .gallery-slide.active {
+    opacity: 1; transform: scale(1.04);
+  }
+  .gallery-dots {
+    display: flex; gap: 8px; justify-content: center; margin-top: 12px;
+  }
+  .gallery-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--border); cursor: pointer; transition: all 0.3s;
+  }
+  .gallery-dot.active { background: var(--gold); transform: scale(1.3); }
+
+  /* Panel labels */
+  #s5 .panel-label {
+    position: absolute; top: 22px; left: 50%; transform: translateX(-50%);
+    font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.22em;
+    background: rgba(8,7,6,0.82); padding: 6px 20px; border-radius: 30px;
+    border: 1px solid var(--border); color: var(--muted); white-space: nowrap; z-index: 10;
+    backdrop-filter: blur(10px);
+  }
+  #s5 .after-label { border-color: var(--gold-dim); color: var(--gold); }
+
+  /* Metrics */
+  #s5 .s5-metrics {
+    position: absolute; bottom: 20px; left: 20px;
+    display: flex; gap: 10px; z-index: 10;
+  }
+  #s5 .metric {
+    background: rgba(10,9,8,0.85); border: 1px solid var(--border);
+    border-radius: 10px; padding: 8px 14px;
+    font-family: 'DM Mono', monospace; backdrop-filter: blur(10px);
+  }
+  #s5 .metric-val { font-size: 18px; color: var(--gold); font-weight: 400; }
+  #s5 .metric-unit { font-size: 9px; color: var(--muted); letter-spacing: 0.1em; margin-left: 4px; }
+
+  /* Command bubble */
+  #s5 .cmd-bubble {
+    position: absolute; bottom: 90px; left: 50%; transform: translateX(-50%);
+    background: rgba(16,14,10,0.92); border: 1px solid var(--gold-dim);
+    border-radius: 28px; padding: 10px 24px;
+    font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text);
+    letter-spacing: 0.04em; white-space: nowrap;
+    opacity: 0; transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: none; z-index: 20;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.4), 0 0 12px rgba(201,168,76,0.1);
+  }
+  #s5 .cmd-bubble.show { opacity: 1; }
+  #s5 .cmd-bubble::before { content: '›_ '; color: var(--gold); }
+
+  /* Processing indicator */
+  #s5 .s5-processing {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 36px; height: 36px; border: 2px solid transparent;
+    border-top-color: var(--gold); border-radius: 50%;
+    opacity: 0; transition: opacity 0.3s ease; z-index: 18;
+    pointer-events: none;
+  }
+  #s5 .s5-processing.active { opacity: 1; animation: procSpin 0.8s linear infinite; }
+  @keyframes procSpin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+  /* Progress wrap */
+  #s5 .s5-progress-wrap {
+    position: absolute; bottom: 20px; right: 20px;
+    display: flex; align-items: center; gap: 10px; z-index: 10;
+    background: rgba(10,9,8,0.85); border: 1px solid var(--border);
+    border-radius: 10px; padding: 8px 14px; backdrop-filter: blur(10px);
+  }
+  #s5 .s5-step-dots { display: flex; gap: 5px; }
+  #s5 .s5-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--muted2); transition: all 0.4s ease;
+  }
+  #s5 .s5-dot.done { background: var(--gold); transform: scale(1.35); box-shadow: 0 0 6px rgba(201,168,76,0.4); }
+  #s5 .s5-step-label {
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    color: var(--muted); letter-spacing: 0.08em;
+    transition: color 0.4s ease; max-width: 200px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+
+  /* Dark vignette on panels */
+  #s5 .vignette {
+    position: absolute; inset: 0; z-index: 4; pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 50%, rgba(10,9,8,0.35) 100%);
+  }
+
+  /* Dimension labels */
+  #s5 .dim-label {
+    position: absolute; z-index: 8; pointer-events: none;
+    font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.12em;
+    color: rgba(201,168,76,0.5); background: rgba(10,9,8,0.6);
+    padding: 2px 8px; border-radius: 3px;
+  }
+
+  /* SLIDE 6: TECH STACK */
+  #s6 .slide-inner { padding: 70px 8%; justify-content: center; gap: 28px; }
+  #s6 .tech-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  #s6 .tech-col { display: flex; flex-direction: column; gap: 12px; }
+  #s6 .tech-col-title { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--gold); letter-spacing: 0.2em; margin-bottom: 6px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+  #s6 .tech-item { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  #s6 .tech-name { font-size: 15px; font-weight: 600; color: var(--text); }
+  #s6 .tech-role { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  #s6 .tech-cost { font-family: 'DM Mono', monospace; font-size: 10px; margin-top: 8px; padding: 3px 8px; border-radius: 4px; display: inline-block; }
+  #s6 .tech-cost.free { color: #4CAF7A; border: 1px solid #4CAF7A40; background: #4CAF7A10; }
+  #s6 .tech-cost.paid { color: var(--gold); border: 1px solid var(--gold-dim); background: #C9A84C10; }
+
+  /* SLIDE 7: MARKET */
+  #s7 .slide-inner { padding: 70px 8%; justify-content: center; gap: 32px; }
+  #s7 .stats-row { display: flex; gap: 24px; }
+  #s7 .stat-card { flex: 1; background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 28px 24px; text-align: center; }
+  #s7 .stat-big { font-size: 52px; font-weight: 300; color: var(--gold); line-height: 1; font-family: 'Cormorant Garamond', serif; }
+  #s7 .stat-sub { font-size: 13px; color: var(--muted); margin-top: 8px; font-family: 'DM Mono', monospace; letter-spacing: 0.1em; }
+  #s7 .advantage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  #s7 .adv { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; }
+  #s7 .adv-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  #s7 .adv-body { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* SLIDE 8: TIMELINE */
+  #s8 .slide-inner { padding: 70px 8%; justify-content: center; gap: 28px; }
+  #s8 .timeline { display: flex; gap: 0; position: relative; }
+  #s8 .timeline::before { content: ''; position: absolute; top: 24px; left: 0; right: 0; height: 1px; background: var(--border); }
+  #s8 .phase { flex: 1; padding-top: 50px; padding-right: 20px; position: relative; }
+  #s8 .phase-dot { position: absolute; top: 17px; left: 0; width: 14px; height: 14px; border-radius: 50%; background: var(--bg3); border: 2px solid var(--border); }
+  #s8 .phase-dot.active { background: var(--gold); border-color: var(--gold); box-shadow: 0 0 10px var(--gold-dim); }
+  #s8 .phase-period { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--gold); letter-spacing: 0.12em; margin-bottom: 10px; }
+  #s8 .phase-title { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 10px; }
+  #s8 .phase-items { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  #s8 .phase-items li { font-size: 13px; color: var(--muted); padding-left: 14px; position: relative; line-height: 1.5; }
+  #s8 .phase-items li::before { content: '›'; position: absolute; left: 0; color: var(--gold-dim); }
+  #s8 .cost-row { display: flex; gap: 20px; }
+  #s8 .cost-box { flex: 1; background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px; }
+  #s8 .cost-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.12em; margin-bottom: 10px; }
+  #s8 .cost-amount { font-size: 28px; font-weight: 300; color: var(--gold); }
+  #s8 .cost-detail { font-size: 12px; color: var(--muted2); margin-top: 6px; line-height: 1.6; }
+
+  /* SLIDE 9: CTA */
+  #s9 { background: var(--bg); }
+  #s9 .slide-inner { justify-content: center; align-items: center; text-align: center; padding: 60px 8%; gap: 28px; }
+  #s9 .cta-title { font-size: clamp(48px, 7vw, 90px); font-weight: 300; line-height: 1.05; }
+  #s9 .cta-title em { color: var(--gold); font-style: italic; }
+  #s9 .cta-sub { font-size: 18px; color: var(--muted); max-width: 560px; line-height: 1.7; font-weight: 300; }
+  #s9 .cta-items { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
+  #s9 .cta-item { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 18px 28px; font-size: 15px; color: var(--text); }
+  #s9 .cta-item strong { color: var(--gold); display: block; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.12em; margin-bottom: 4px; font-weight: 400; }
+  #s9 .bg-text { position: absolute; font-size: 25vw; color: #ffffff03; font-weight: 300; bottom: -5%; right: -5%; line-height: 1; pointer-events: none; }
+</style>
+
+
+</head>
+<body>
+
+<div class="brand">
+  <div class="brand-icon">◈</div>
+  <div class="brand-name">LUXORA</div>
+</div>
+
+<div id="deck">
+
+  <!-- SLIDE 1: HERO -->
+  <div class="slide active" id="s1">
+    <div class="slide-inner">
+      <div class="eyebrow">LUXORA AI STUDİO</div>
+      <h1 class="hero-title">LUXORA</h1>
+      <p class="hero-sub">Mimarlar gerek kalmadan, doğal dille iç mekan tasarımı. Bir fotoğraf, bir komut — saniyeler içinde fotorealistik render.</p>
+      <div class="tag-row">
+        <span class="pill gold">Mobilya & İnşaat</span>
+        <span class="pill">Yat & Lüks Konut</span>
+      </div>
+      <div class="corner">
+        <div class="corner-text">
+          Sunumu yönlendirin<br>
+          ← → ok tuşları veya tıklayın
+        </div>
+      </div>
+      <div class="bg-num">LUX</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: PROBLEM -->
+  <div class="slide" id="s2">
+    <div class="slide-inner">
+      <div>
+        <div class="slide-tag">01 — Sorun</div>
+        <div class="rule"></div>
+        <h2 class="big-title">Şu an ne<br>oluyor?</h2>
+      </div>
+      <div class="problems">
+        <div class="prob-card">
+          <div class="prob-icon">👷</div>
+          <div class="prob-title">Mimar Bağımlılığı</div>
+          <div class="prob-body">Müşteri "şu koltuğu şununla değiştir" dese bile bir mimar ya da 3D uzmanı lazım. Gün, bazen hafta bekleniliyor.</div>
+        </div>
+        <div class="prob-card">
+          <div class="prob-icon">💸</div>
+          <div class="prob-title">Yüksek Maliyet</div>
+          <div class="prob-body">Tek bir iç mekan projesi için ödenen 3D render ücreti: $500–$5.000+. Suudi Arabistan'da AutoCAD bilen biri bulmak bile zor.</div>
+        </div>
+        <div class="prob-card">
+          <div class="prob-icon">⏱️</div>
+          <div class="prob-title">Yavaş Süreç</div>
+          <div class="prob-body">Müşteri görmek istediğini açıklıyor → mimar çiziyor → revizyon → revizyon. Satış döngüsü uzuyor, müşteri soğuyor.</div>
+        </div>
+      </div>
+      <div class="card" style="border-left: 3px solid var(--gold)">
+        <div class="card-body" style="color: var(--text); font-size: 17px;">
+          <em>"IKEA bile AI ile oda planlıyor. Lüks sektörde bu boşluk çok daha büyük, fırsat da o kadar büyük."</em>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: SOLUTION -->
+  <div class="slide" id="s3">
+    <div class="slide-inner">
+      <div>
+        <div class="slide-tag">02 — Çözüm</div>
+        <div class="rule"></div>
+        <h2 class="big-title">Ne<br>yapıyoruz?</h2>
+      </div>
+      <div class="sol-grid">
+        <div class="sol-big">
+          <div class="sol-icon-big">💬</div>
+          <div>
+            <div class="sol-title-big">Doğal dil ile <em>mobilya değiştir</em>,<br>saniyeler içinde fotorealistik çıktı al.</div>
+            <div style="margin-top: 12px; font-size: 14px; color: var(--muted); font-weight: 300; line-height: 1.7;">
+              "Bu koltuğu kaldır, yerine Hermes koltuk takımı koy" — AI anlar, görüntüyü işler, sonucu gösterir.
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">📸 Girdi</div>
+          <div class="card-body">Oda fotoğrafı, yat iç mekanı, mimari proje render'ı — her türlü görsel.</div>
+        </div>
+        <div class="card">
+          <div class="card-title">🛋️ Mobilya Kataloğu</div>
+          <div class="card-body">Kendi mobilya modellerinizi yükleyin. Lüks markalar, özel ölçüler, gerçek malzeme dokuları.</div>
+        </div>
+        <div class="card">
+          <div class="card-title">🎨 AI Render</div>
+          <div class="card-body">Fotorealistik çıktı — ışık, gölge, perspektif otomatik hesaplanır.</div>
+        </div>
+        <div class="card">
+          <div class="card-title">🔄 3D Gezinme</div>
+          <div class="card-body">Mobilyayı her açıdan görün.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: PIPELINE -->
+  <div class="slide" id="s4">
+    <div class="slide-inner">
+      <div>
+        <div class="slide-tag">03 — Nasıl çalışır</div>
+        <div class="rule"></div>
+        <h2 class="big-title">Pipeline</h2>
+      </div>
+      <div class="pipeline">
+        <div class="pipe-step">
+          <div class="pipe-num">ADIM 01</div>
+          <div class="pipe-title">Oda Kur</div>
+          <div class="pipe-body">Genişlik, uzunluk, yükseklik (cm) girilir. 3D oda anında oluşur — duvarlar, zemin hazır.</div>
+          <div class="pipe-tag">SCENE SETUP</div>
+          <div class="pipe-arrow">›</div>
+        </div>
+        <div class="pipe-step">
+          <div class="pipe-num">ADIM 02</div>
+          <div class="pipe-title">Komut Ver</div>
+          <div class="pipe-body">"TV ünitesinin yanına lamel panel koy" — Türkçe doğal dil. Teknik bilgi gerekmez.</div>
+          <div class="pipe-tag">CLAUDE AI</div>
+          <div class="pipe-arrow">›</div>
+        </div>
+        <div class="pipe-step">
+          <div class="pipe-num">ADIM 03</div>
+          <div class="pipe-title">Spatial Reasoning</div>
+          <div class="pipe-body">Claude sahne JSON'unu okur. "Yanına" = TV koordinatı + genişliğini hesaplar. Tam nokta bulunur.</div>
+          <div class="pipe-tag">SCENE JSON</div>
+          <div class="pipe-arrow">›</div>
+        </div>
+        <div class="pipe-step">
+          <div class="pipe-num">ADIM 04</div>
+          <div class="pipe-title">3D Güncellenir</div>
+          <div class="pipe-body">Koordinatlar Scene JSON'a yazılır. Three.js sahneyi anında yeniden render eder. Bekleme yok.</div>
+          <div class="pipe-tag">THREE.JS RT</div>
+          <div class="pipe-arrow">›</div>
+        </div>
+        <div class="pipe-step">
+          <div class="pipe-num">ADIM 05</div>
+          <div class="pipe-title">İçinde Gez</div>
+          <div class="pipe-body">First-person kamera: odaya gir, her açıdan mobilyaları incele, müşteriye canlı göster.</div>
+          <div class="pipe-tag">WALKTHROUGH</div>
+        </div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-box">
+          <div class="detail-box-title">ANLIKKLIK</div>
+          <div class="detail-box-body">Komuttan 3D güncellemeye <strong style="color:var(--gold)">&lt;1 saniye</strong>. Revizyon? Tekrar söyle, anında değişir. Geleneksel yöntem: 2–5 gün.</div>
+        </div>
+        <div class="detail-box">
+          <div class="detail-box-title">GEREKLİ TEKNİK BİLGİ</div>
+          <div class="detail-box-body">Kullanıcı tarafında <strong style="color:var(--gold)">sıfır</strong>. Sadece fotoğraf yükle ve Türkçe yaz. Mimar, AutoCAD, 3D bilgisi gerekmez.</div>
+        </div>
+        <div class="detail-box">
+          <div class="detail-box-title">KENDİ KATALOG</div>
+          <div class="detail-box-body">Şirketin kendi mobilya modelleri sisteme yüklenir. Müşteriye sadece o şirkete özel koleksiyon sunulur. <strong style="color:var(--gold)">Rakipten fark bu.</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: PHOTO ROOM DEMO -->
+  <div class="slide" id="s5">
+    <div class="slide-inner">
+
+      <!-- LEFT: Empty room photo -->
+      <div class="s5-panel">
+        <img class="room-photo kb-left" src="roombosoda.png" alt="Boş oda">
+        <div class="grid-overlay"></div>
+        <div class="vignette"></div>
+        <div class="panel-label">BOŞ ODA</div>
+        <div class="s5-metrics">
+          <div class="metric"><span class="metric-val">14.4</span><span class="metric-unit">m²</span></div>
+          <div class="metric"><span class="metric-val">0</span><span class="metric-unit">MOBİLYA</span></div>
+        </div>
+        <div class="dim-label" style="bottom:48%; left:8%">4.5 m</div>
+        <div class="dim-label" style="bottom:12%; right:12%">3.2 m</div>
+      </div>
+
+      <!-- CENTER DIVIDER -->
+      <div class="s5-divider"></div>
+
+      <!-- RIGHT: Furniture piece-by-piece placement -->
+      <div class="s5-panel">
+        <!-- Base empty room (always visible) -->
+        <img class="room-base kb-right" src="roombosoda.png" alt="">
+
+        <!-- Furniture layers — each is roomdoluoda.jpg masked to its region -->
+        <img class="furniture-layer" id="fl-sofa" src="roomdoluoda.jpg" alt="">
+        <img class="furniture-layer" id="fl-tables" src="roomdoluoda.jpg" alt="">
+        <img class="furniture-layer" id="fl-decor" src="roomdoluoda.jpg" alt="">
+        <img class="furniture-layer" id="fl-lights" src="roomdoluoda.jpg" alt="">
+
+        <div class="placement-ring" id="s5-ring"></div>
+        <div class="vignette"></div>
+        <div class="s5-processing" id="s5-processing"></div>
+        <div class="panel-label after-label">LUXORA AI</div>
+        <div class="s5-metrics">
+          <div class="metric"><span class="metric-val" id="mv-area">14.4</span><span class="metric-unit">m²</span></div>
+          <div class="metric"><span class="metric-val" id="mv-count">0</span><span class="metric-unit">MOBİLYA</span></div>
+        </div>
+        <div class="cmd-bubble" id="s5-cmd"></div>
+        <button class="btn-360" id="btn-360">◎ 3D WALKTHROUGH</button>
+        <div class="s5-progress-wrap">
+          <div class="s5-step-dots">
+            <div class="s5-dot"></div><div class="s5-dot"></div>
+            <div class="s5-dot"></div><div class="s5-dot"></div>
+          </div>
+          <div class="s5-step-label" id="s5-step">AI komutunu bekliyor...</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SLIDE 6: TECH STACK -->
+  <div class="slide" id="s6">
+    <div class="slide-inner">
+      <div>
+        <div class="slide-tag">05 — Teknik Yapı</div>
+        <div class="rule"></div>
+        <h2 class="big-title">Altyapı</h2>
+      </div>
+      <div class="tech-grid">
+        <div class="tech-col">
+          <div class="tech-col-title">AI KATMANI</div>
+          <div class="tech-item">
+            <div class="tech-name">Claude API</div>
+            <div class="tech-role">Dil anlama, komut yorumlama, görsel analiz</div>
+            <div class="tech-cost paid">API BAZLI ÜCRET</div>
+          </div>
+          <div class="tech-item">
+            <div class="tech-name">SAM2 (Meta)</div>
+            <div class="tech-role">Mobilya segmentasyonu — piksel hassasiyeti</div>
+            <div class="tech-cost free">AÇIK KAYNAK</div>
+          </div>
+          <div class="tech-item">
+            <div class="tech-name">FLUX Inpaint</div>
+            <div class="tech-role">Fotorealistik mobilya render engine</div>
+            <div class="tech-cost paid">FAL.AI — $0.003/RENDER</div>
+          </div>
+        </div>
+        <div class="tech-col">
+          <div class="tech-col-title">3D & GÖRSEL</div>
+          <div class="tech-item">
+            <div class="tech-name">Three.js</div>
+            <div class="tech-role">3D görüntüleyici ve gezinme motoru</div>
+            <div class="tech-cost free">TAMAMEN ÜCRETSİZ</div>
+          </div>
+          <div class="tech-item">
+            <div class="tech-name">ControlNet</div>
+            <div class="tech-role">Oda perspektifi ve derinliğini korur</div>
+            <div class="tech-cost free">AÇIK KAYNAK</div>
+          </div>
+          <div class="tech-item">
+            <div class="tech-name">GLB / GLTF</div>
+            <div class="tech-role">Mobilya 3D model formatı — ölçülü</div>
+            <div class="tech-cost free">STANDART FORMAT</div>
+          </div>
+        </div>
+        <div class="tech-col">
+          <div class="tech-col-title">UYGULAMA</div>
+          <div class="tech-item">
+            <div class="tech-name">React + Node.js</div>
+            <div class="tech-role">Web arayüzü ve backend API</div>
+            <div class="tech-cost free">AÇIK KAYNAK</div>
+          </div>
+          <div class="tech-item">
+            <div class="tech-name">Özel Katalog DB</div>
+            <div class="tech-role">Şirkete özel mobilya modelleri & metadata</div>
+            <div class="tech-cost free">KENDİ SUNUCUNUZ</div>
+          </div>
+          <div class="tech-item">
+            <div class="tech-name">Luxora Alt.</div>
+            <div class="tech-role">Mevcut AI ajans altyapısı üzerine kurulur</div>
+            <div class="tech-cost gold">HAZIR ALTYAPI</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: MARKET -->
+  <div class="slide" id="s7">
+    <div class="slide-inner">
+      <div>
+        <div class="slide-tag">06 — Pazar</div>
+        <div class="rule"></div>
+        <h2 class="big-title">Neden<br><em style="color:var(--gold);font-style:italic">şimdi?</em></h2>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-big">%7</div>
+          <div class="stat-sub">YILLIK BÜYÜME<br>TR & ORTA DOĞU İNŞAAT</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-big">$0</div>
+          <div class="stat-sub">RAKİP YOK<br>TÜRKÇE BÖLGESEL ÇÖZÜM</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-big">90sn</div>
+          <div class="stat-sub">RENDER SÜRESİ<br>GELENEKSELİN 1/100'Ü</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-big">∞</div>
+          <div class="stat-sub">REVIZYON<br>EK MALIYET YOK</div>
+        </div>
+      </div>
+      <div class="advantage-grid">
+        <div class="adv">
+          <div class="adv-title">🛥️ Yat Sektörü</div>
+          <div class="adv-body">CUMANA tipi projelerde müşteriye iç mekan seçenekleri saniyeler içinde sunulur. Satış hızlanır, mimar maliyeti düşer.</div>
+        </div>
+        <div class="adv">
+          <div class="adv-title">🏗️ İnşaat & Konut</div>
+          <div class="adv-body">Proje öncesi kat gösterimi — daire henüz yapılmamışken müşteri içinde "geziyor", mobilya seçiyor.</div>
+        </div>
+        <div class="adv">
+          <div class="adv-title">🛋️ Mobilya Showroom</div>
+          <div class="adv-body">"Bu koltuk evimde nasıl görünür?" sorusu anında yanıtlanır. Müşteri kendi odasının fotoğrafını yükler.</div>
+        </div>
+        <div class="adv">
+          <div class="adv-title">🕌 Orta Doğu</div>
+          <div class="adv-body">Suudi Arabistan ve UAE'de AutoCAD bilen bulmak zor, maliyet yüksek. Bu sistem o açığı doğrudan kapatır.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: TIMELINE + COST -->
+  <div class="slide" id="s8">
+    <div class="slide-inner">
+      <div>
+        <div class="slide-tag">07 — Plan</div>
+        <div class="rule"></div>
+        <h2 class="big-title">Takvim &<br>Maliyet</h2>
+      </div>
+      <div class="timeline">
+        <div class="phase">
+          <div class="phase-dot active"></div>
+          <div class="phase-period">AY 1–2</div>
+          <div class="phase-title">MVP</div>
+          <ul class="phase-items">
+            <li>3D oda editörü</li>
+            <li>AI komut → Scene JSON</li>
+            <li>Parametrik lamel panel</li>
+            <li>First-person walkthrough</li>
+            <li>5 demo GLB model</li>
+          </ul>
+        </div>
+        <div class="phase">
+          <div class="phase-dot"></div>
+          <div class="phase-period">AY 3–4</div>
+          <div class="phase-title">3D Motor</div>
+          <ul class="phase-items">
+            <li>Three.js viewer</li>
+            <li>GLB katalog sistemi</li>
+            <li>360° gezinme</li>
+            <li>SAM2 segmentasyon</li>
+            <li>Ölçü gösterimi</li>
+          </ul>
+        </div>
+        <div class="phase">
+          <div class="phase-dot"></div>
+          <div class="phase-period">AY 5–6</div>
+          <div class="phase-title">Polishing</div>
+          <ul class="phase-items">
+            <li>Mobilya kataloğu büyütme</li>
+            <li>Revizyon geçmişi</li>
+            <li>PDF teklif çıktısı</li>
+            <li>Müşteri paneli</li>
+            <li>Türkçe / Arapça</li>
+          </ul>
+        </div>
+        <div class="phase">
+          <div class="phase-dot"></div>
+          <div class="phase-period">AY 7+</div>
+          <div class="phase-title">Ölçekleme</div>
+          <ul class="phase-items">
+            <li>Orta Doğu lansmanı</li>
+            <li>SaaS model</li>
+            <li>API satışı</li>
+            <li>Marka katalogları</li>
+          </ul>
+        </div>
+      </div>
+      <div class="cost-row">
+        <div class="cost-box">
+          <div class="cost-label">GELİŞTİRME MALİYETİ (6 AY)</div>
+          <div class="cost-amount">$8K–15K</div>
+          <div class="cost-detail">Luxora altyapısı üzerine. Sıfırdan yazılmıyor — mevcut AI agent yapısı genişletiliyor.</div>
+        </div>
+        <div class="cost-box">
+          <div class="cost-label">ÇALIŞMA MALİYETİ / AY</div>
+          <div class="cost-amount">~$50–200</div>
+          <div class="cost-detail">Aylık 1.000 render için tahmini API maliyeti. Kullanım arttıkça müşteriye yansıtılır.</div>
+        </div>
+        <div class="cost-box">
+          <div class="cost-label">HEDEF GELİR MODELİ</div>
+          <div class="cost-amount">SaaS</div>
+          <div class="cost-detail">Aylık $200–500 lisans / şirket. 20 şirket = $4K–10K/ay sabit gelir. Üstüne render paketi.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: CTA -->
+  <div class="slide" id="s9">
+    <div class="slide-inner">
+      <div class="slide-tag">08 — Sonuç</div>
+      <h2 class="cta-title">Yapılabilir.<br><em>Yapılıyor.</em></h2>
+      <p class="cta-sub">Teknik altyapı hazır. Luxora AI Agency deneyimi, Three.js motoru, Claude AI entegrasyonu — hepsi bir arada.</p>
+      <div class="cta-items">
+        <div class="cta-item"><strong>SÜRE</strong>6 ayda tam ürün</div>
+        <div class="cta-item"><strong>3D GEZİNME</strong>Kendi motorumuz</div>
+        <div class="cta-item"><strong>RENDER</strong>30–90 saniye</div>
+        <div class="cta-item"><strong>BAĞIMLILIK</strong>Sıfır dış API zorunlu</div>
+        <div class="cta-item"><strong>PAZAR</strong>TR & Orta Doğu ilk</div>
+      </div>
+      <div class="rule" style="margin: 8px auto;"></div>
+      <p style="font-size: 15px; color: var(--muted); font-family: 'DM Mono', monospace; letter-spacing: 0.08em;">LUXORA AI — INTERIOR AI SYSTEM</p>
+      <div class="bg-text">◈</div>
+    </div>
+  </div>
+
+</div><!-- /deck -->
+
+<!-- 3D WALKTHROUGH GALLERY OVERLAY -->
+<div class="pano-overlay" id="pano-overlay">
+  <div class="pano-header">
+    <div class="pano-title">◎ LUXORA 3D WALKTHROUGH</div>
+    <div class="pano-hint">Sürükleyerek farklı açıları keşfedin</div>
+    <button class="pano-close" id="pano-close">×</button>
+  </div>
+  <div class="pano-container" id="pano-container">
+    <div class="gallery-track" id="gallery-track"></div>
+  </div>
+  <div class="gallery-dots" id="gallery-dots"></div>
+</div>
+
+<!-- NAV -->
+<div id="nav">
+  <button id="prev">‹</button>
+  <div id="dots"></div>
+  <div id="slide-num">1 / 9</div>
+  <button id="next">›</button>
+</div>
+
+<script>
+// SLIDES
+const slides = document.querySelectorAll('.slide');
+let current = 0;
+let threeInit = false;
+
+function goTo(n) {
+  slides[current].classList.remove('active');
+  current = Math.max(0, Math.min(n, slides.length - 1));
+  slides[current].classList.add('active');
+  document.getElementById('slide-num').textContent = (current + 1) + ' / ' + slides.length;
+  document.querySelectorAll('.nav-dot').forEach((d, i) => d.classList.toggle('on', i === current));
+  if (current === 4 && !threeInit) initDemo();
+}
+
+// Build dots
+const dotsEl = document.getElementById('dots');
+dotsEl.style.display = 'flex'; dotsEl.style.gap = '6px';
+slides.forEach((_, i) => {
+  const d = document.createElement('div');
+  d.className = 'nav-dot' + (i === 0 ? ' on' : '');
+  d.onclick = () => goTo(i);
+  dotsEl.appendChild(d);
+});
+
+document.getElementById('prev').onclick = () => goTo(current - 1);
+document.getElementById('next').onclick = () => goTo(current + 1);
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') goTo(current - 1);
+});
+
+// 3D ROOM DEMO (loaded from slide5-demo.js)
+</script>
+<script src="slide5-demo.js"></script>
